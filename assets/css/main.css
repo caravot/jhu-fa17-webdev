@@ -1,0 +1,10 @@
+
+img.img-thumbnail {
+    height: 140px;
+    width: 140px;
+}
+
+/* debug colors */
+.bg-red { background-color: red; }
+.bg-blue { background-color: blue; }
+.bg-green { background-color: green; }
