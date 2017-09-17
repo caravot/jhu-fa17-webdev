@@ -24,7 +24,7 @@ public class wk3 {
 
         total = addNumbers(one, two);
 
-        System.out.println("The total of your input is: " + numberFormat(total));
+        System.out.println("The total of your input ( " + one + " + " + two + " ) is: " + numberFormat(total));
     }
 
     // add two integers
