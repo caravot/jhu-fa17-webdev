@@ -30,7 +30,7 @@ Define an abstract class Ship that implements the Contact Interface.
 Define a class Destroyer that subclasses Ship
 
 * Has the following attributes and get/set methods: numberMissile
-*Supports int and String setNumberMissiles() arguments. If the String argument of setNumberMissiles() encounters a parsing error, set the numberMissiles to 2.
+* Supports int and String setNumberMissiles() arguments. If the String argument of setNumberMissiles() encounters a parsing error, set the numberMissiles to 2.
 
 ## Step 4
 

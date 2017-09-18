@@ -1,0 +1,46 @@
+public class Ship implements Contact {
+    @Override
+    public int getLength() {
+        return 0;
+    }
+
+    @Override
+    public void setLength(int i) {
+
+    }
+
+    @Override
+    public int getSpeed() {
+        return 0;
+    }
+
+    @Override
+    public void setSpeed(int i) {
+
+    }
+
+    @Override
+    public void setSpeed(String s) {
+
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public void setName(String s) {
+
+    }
+
+    @Override
+    public Contact getType() {
+        return null;
+    }
+
+    @Override
+    public void setType(String s) {
+
+    }
+}
