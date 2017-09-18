@@ -16,4 +16,11 @@ public class Submarine extends Ship {
             this.numberTorpedos = 2;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Ship Type: Submarine\n\t" +
+                "Number of Torpedos: " + getNumberTorpedos() +
+                "\n\t" + super.toString();
+    }
 }

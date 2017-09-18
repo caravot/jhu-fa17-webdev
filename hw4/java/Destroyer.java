@@ -18,4 +18,11 @@ public class Destroyer extends Ship {
             this.numberMissile = 2;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Ship Type: Destroyer\n\t" +
+                "Number of Missiles: " + getNumberMissile() +
+                "\n\t" + super.toString();
+    }
 }

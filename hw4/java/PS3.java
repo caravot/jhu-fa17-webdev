@@ -8,4 +8,11 @@ public class PS3 extends Aircraft {
     public void setNumberEngines(int numberEngines) {
         this.numberEngines = numberEngines;
     }
+
+    @Override
+    public String toString() {
+        return "Aircraft Type: PS3\n\t" +
+                "Number of Engines: " + getNumberEngines() +
+                "\n\t" + super.toString();
+    }
 }
