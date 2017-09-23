@@ -1,9 +1,9 @@
 public class Aircraft implements Contact {
-    int length;
-    int speed;
-    String name;
-    String type;
-    int altitude;
+    protected int length;
+    protected int speed;
+    protected String name;
+    protected String type;
+    protected int altitude;
 
     public int getAltitude() {
         return altitude;

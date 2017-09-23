@@ -1,8 +1,8 @@
 public class Ship implements Contact {
-    int length;
-    int speed;
-    String name;
-    String type;
+    protected int length;
+    protected int speed;
+    protected String name;
+    protected String type;
 
     @Override
     public String toString() {

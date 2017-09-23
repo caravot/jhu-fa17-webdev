@@ -1,5 +1,5 @@
 public class PS3 extends Aircraft {
-    int numberEngines;
+    private int numberEngines;
 
     public PS3() {
         setType("PS3");

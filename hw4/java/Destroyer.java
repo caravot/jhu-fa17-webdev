@@ -1,7 +1,7 @@
 import java.text.ParseException;
 
 public class Destroyer extends Ship {
-    public int numberMissile = 0;
+    private int numberMissile = 0;
 
     public Destroyer() {
         setType("Destroyer");

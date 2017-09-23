@@ -1,5 +1,5 @@
 public class Submarine extends Ship {
-    public int numberTorpedos;
+    private int numberTorpedos;
 
     public Submarine() {
         setType("Submarine");
