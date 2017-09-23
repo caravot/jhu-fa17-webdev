@@ -15,6 +15,6 @@ public interface Contact {
     public void setName(String s);
 
     // getType/setType (String) (This is an arbitrary string label for anything of class Contact)
-    public Contact getType();
+    public String getType();
     public void setType(String s);
 }

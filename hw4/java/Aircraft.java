@@ -2,7 +2,7 @@ public class Aircraft implements Contact {
     int length;
     int speed;
     String name;
-    Contact type;
+    String type;
     int altitude;
 
     public int getAltitude() {
@@ -10,16 +10,16 @@ public class Aircraft implements Contact {
     }
 
     public void setAltitude(int altitude) {
-        this.altitude = altitude;
+        this.altitude = Util.validateInteger(altitude);
     }
 
     @Override
     public String toString() {
-        return "Aircraft name\n\t" + getName() +
-                "\n\tLength of: " + getLength() +
-                " with a speed of " + getSpeed() +
-                " with an altitude of " + getAltitude();
-//                " and is of type " + getType().toString();
+        return "Type: " + getType() +
+                "\n\tName: " + getName() +
+                "\n\tLength: " + getLength() +
+                "\n\tSpeed: " + getSpeed() +
+                "\n\tAltitude: " + getAltitude();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class Aircraft implements Contact {
 
     @Override
     public void setLength(int i) {
-        this.length = i;
+        this.length = Util.validateInteger(i);
     }
 
     @Override
@@ -39,12 +39,18 @@ public class Aircraft implements Contact {
 
     @Override
     public void setSpeed(int i) {
-        this.speed = i;
+        this.speed = Util.validateInteger(i);
     }
 
     @Override
     public void setSpeed(String s) {
-        this.speed = Integer.parseInt(s);
+        try {
+            int num = Integer.parseInt(s);
+            this.speed = Util.validateInteger(num);
+        } catch (NumberFormatException nfe) {
+            System.out.println("Unable to parse the String " + "\"" + s + "\" into a valid integer. Setting value to 0.");
+            this.speed = 0;
+        }
     }
 
     @Override
@@ -58,12 +64,12 @@ public class Aircraft implements Contact {
     }
 
     @Override
-    public Contact getType() {
+    public String getType() {
         return this.type;
     }
 
     @Override
     public void setType(String s) {
-
+        this.type = s;
     }
 }
