@@ -243,7 +243,7 @@ public class BookingDay {
      *
      * @return the year
      */
-    int getYear() {
+    public int getYear() {
         return year;
     }
 
