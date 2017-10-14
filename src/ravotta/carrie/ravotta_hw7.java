@@ -1,33 +1,20 @@
 package ravotta.carrie;
 
+import bookingrate.BookingDay;
 import bookingrate.Rates;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
-@WebServlet(name = "MyFormServlet", urlPatterns = {"/MyFormServlet"})
 public class ravotta_hw7 extends HttpServlet {
-    // Create class level variables
-    List<Rates.HIKE> enumValues = new ArrayList<Rates.HIKE>(EnumSet.allOf(Rates.HIKE.class));
-
-    // web server socket information
-    private final String SERVER_HOSTNAME = "web6.jhuep.com";
-    private final int SERVER_PORT = 20025;
-
     /**
      * @param args the command line arguments
      */
@@ -52,7 +39,7 @@ public class ravotta_hw7 extends HttpServlet {
         String duration = null;
 
         // message to insert into body tag
-        String message = null;
+        String message;
 
         // get user submitted variables
         if (request.getParameter("hikeName") != null) {
@@ -99,8 +86,6 @@ public class ravotta_hw7 extends HttpServlet {
             out.println("<p><strong>Duration:</strong> " + duration + "</p>");
             out.println("<p>&nbsp;</p>");
             out.println(message);
-            out.println("<p>&nbsp;</p>");
-            out.println("<p><a href=\"/\">Go back to resubmit</a></p>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -164,13 +149,10 @@ public class ravotta_hw7 extends HttpServlet {
     /** Calculate total cost of hike
      */
     private String getCost(String hikeName, String duration, String startDate) {
-        String result = null;
-
         // get instance to use for parsing the start date
         Calendar cal = Calendar.getInstance();
 
-        // get what hike is selected
-        int hikeId = Rates.HIKE.valueOf(hikeName).ordinal();
+        Rates rates = new Rates(Rates.HIKE.valueOf(hikeName));
 
         // get what duration is selected
         Integer selectedDuration = Integer.parseInt(duration);
@@ -183,75 +165,30 @@ public class ravotta_hw7 extends HttpServlet {
         // invalid date format
         catch (Exception ex) {
             System.out.println(ex.getMessage());
-        } finally {
-            try {
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH) + 1;
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                result = openSocket(hikeId, year, month, day, selectedDuration);
-                System.out.println("Result: " + result);
-                return result;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return "-0.01:Invalid date format. Error of: " + ex.getMessage();
         }
 
-        return result;
-    }
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
 
-    /**
-     * Open web server socket to get booking rates from
-     * @param hike
-     * @param year
-     * @param month
-     * @param day
-     * @param duration
-     * @return String in format VALUE:MESSAGE
-     *          VALUE = -0.01 indicates an error
-     *          VALUE != -0.01 for quoted rate
-     *          MESSAGE = Error message or "Quoted Rate"
-     * @throws IOException
-     */
-    private String openSocket(int hike, int year, int month, int day, int duration) throws IOException {
-        Socket echoSocket = null;
-        PrintWriter out = null;
-        BufferedReader in = null;
-        String echo = "";
-        String result = "";
+        // set the book day start; add one to the month to compensate for the BookingDay offset
+        BookingDay startDay = new BookingDay(year, month, day);
 
-        // create final string to pass to socket
-        String data = hike + ":" + year + ":" + month + ":" + day + ":" + duration;
+        if (!startDay.isValidDate()) {
+            return "-0.01:Invalid time range. " + rates.getDetails();
+        } else {
+            // add selected duration days to the start date
+            rates.setBeginDate(startDay);
 
-        // open socket connection to web server
-        try {
-            echoSocket = new Socket(SERVER_HOSTNAME, SERVER_PORT);
-            out = new PrintWriter(echoSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-        } catch (UnknownHostException e) {
-            System.err.println("Unknown host: "  + SERVER_HOSTNAME);
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to: " + SERVER_HOSTNAME);
-            System.exit(1);
-        }
-
-        // ensure data string is populated
-        while (data != null) {
-            out.println(data);
-            echo = in.readLine();
-            if (echo == null) {
-                break;
+            // validate the range is valid
+            boolean success = rates.setDuration(selectedDuration);
+            if (rates.isValidDates() && success) {
+                // print out final total
+                return rates.getCost() + ":quoted rate";
             } else {
-                result += echo;
+                return "-0.01:Invalid time range. " + rates.getDetails();
             }
         }
-
-        // close connections; readers; sockets; buffers
-        out.close();
-        in.close();
-        echoSocket.close();
-
-        return result;
     }
 }

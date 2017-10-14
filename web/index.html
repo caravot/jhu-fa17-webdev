@@ -24,7 +24,7 @@
     <h1 class="page-header text-center">Book a Hike</h1>
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <form action="/Rate" method="post" class="form-horizontal" role="form" name="hikeForm" id="hikeForm">
+            <form action="Rate" method="post" class="form-horizontal" role="form" name="hikeForm" id="hikeForm">
                 <div class="form-group">
                     <label for="hikeName" class="col-sm-2 control-label">Hike Name</label>
                     <div class="col-sm-10">
@@ -106,7 +106,7 @@
     durationObj.find('option').remove();
     durationObj.attr('disabled', false);
 
-    $.get('/Rate', { hikeName: hikeName }, function(data) {
+    $.get('Rate', { hikeName: hikeName }, function(data) {
       var days = data.split(",");
 
       // disable dropdown if no durations
