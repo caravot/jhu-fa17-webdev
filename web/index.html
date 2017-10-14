@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Boostrap Starter Page</title>
+    <title>Beartooth Hiking Company</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/jquery-ui.min.css">
     <link rel="stylesheet" href="css/styles.css">
@@ -24,7 +24,7 @@
     <h1 class="page-header text-center">Book a Hike</h1>
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <form action="" method="post" class="form-horizontal">
+            <form action="/Rate" method="post" class="form-horizontal" role="form" name="hikeForm" id="hikeForm">
                 <div class="form-group">
                     <label for="hikeName" class="col-sm-2 control-label">Hike Name</label>
                     <div class="col-sm-10">
@@ -55,12 +55,6 @@
             </form>
         </div>
     </div>
-    <h1 class="page-header text-center">Results</h1>
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-            <strong>Total Cost: $100.00</strong>
-        </div>
-    </div>
 </div>
 
 <script src="js/jquery-1.11.3.min.js"></script>
@@ -69,27 +63,58 @@
 <!--<script src="js/script.js"></script>-->
 <script>
   $(document).ready(function() {
+    // get hike durations when hike name changes
     $('select#hikeName').on('change', getHikeDurations);
 
-    $('input#startDate').datepicker({
+    // create date picker
+    var startDate = $('input#startDate').datepicker({
       showButtonPanel: true,
       changeMonth: true,
       changeYear: true,
-      minDate: "+1D",
+      minDate: "-2M",
       maxDate: "+1Y"
     });
 
+    // set todays date
+    startDate.datepicker('setDate', new Date());
+
+    // populate the first hike on page load
     getHikeDurations();
+
+    // validate required fields
+    $('#hikeForm').on('submit', function (e) {
+      // check that form is valid
+      if(document.getElementById('startDate').value == '' ||
+        document.getElementById('hikeName').value == '' ||
+        document.getElementById('duration').value == '') {
+        alert("All fields are required");
+
+        // stop form submission
+        e.preventDefault();
+      }
+    })
   });
 
+  /**
+   * get duration options for a specified hike
+   */
   function getHikeDurations() {
     var hikeName = $('select#hikeName > option:selected').val();
     var durationObj = $('select#duration');
-    durationObj.find('option').remove();
 
-    $.get('/Welcome', { hikeName: hikeName }, function(data) {
+    // clean up from previous lookup
+    durationObj.find('option').remove();
+    durationObj.attr('disabled', false);
+
+    $.get('/Rate', { hikeName: hikeName }, function(data) {
       var days = data.split(",");
 
+      // disable dropdown if no durations
+      if (days.length <= 0) {
+        durationObj.attr('disabled', true);
+      }
+
+      // add durations to dropdown
       for (var i = 0; i < days.length; i++) {
         durationObj.append($('<option></option>').val(days[i]).html(days[i]));
       }

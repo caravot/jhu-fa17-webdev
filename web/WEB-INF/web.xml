@@ -9,7 +9,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ravotta_hw7</servlet-name>
-        <url-pattern>/Welcome</url-pattern>
+        <url-pattern>/Rate</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
