@@ -14,7 +14,7 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ravotta_hw7 extends HttpServlet {
+public class ravotta_hw8 extends HttpServlet {
     /**
      * @param args the command line arguments
      */
@@ -35,6 +35,7 @@ public class ravotta_hw7 extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String hikeName = null;
+        String partyNumber = null;
         String startDate = null;
         String duration = null;
 
@@ -52,6 +53,10 @@ public class ravotta_hw7 extends HttpServlet {
 
         if (request.getParameter("duration") != null) {
             duration = request.getParameter("duration");
+        }
+
+        if (request.getParameter("partyNumber") != null) {
+            partyNumber = request.getParameter("partyNumber");
         }
 
         if (hikeName == null || startDate == null || duration == null) {
@@ -81,6 +86,7 @@ public class ravotta_hw7 extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Beartooth Hiking Company Final Hike Rate</h1>");
+            out.println("<p><strong>Number in Party:</strong> " + partyNumber + "</p>");
             out.println("<p><strong>Hike Name:</strong> " + hikeName + "</p>");
             out.println("<p><strong>Start Date:</strong> " + startDate + "</p>");
             out.println("<p><strong>Duration:</strong> " + duration + "</p>");
