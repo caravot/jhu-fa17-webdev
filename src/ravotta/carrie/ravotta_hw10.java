@@ -3,10 +3,13 @@ package ravotta.carrie;
 import bookingrate.BookingDay;
 import bookingrate.Rates;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -14,7 +17,7 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ravotta_hw9 extends HttpServlet {
+public class ravotta_hw10 extends HttpServlet {
     /**
      * @param args the command line arguments
      */
@@ -33,37 +36,32 @@ public class ravotta_hw9 extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String hikeName = null;
-        String partyNumber = null;
-        String startDate = null;
-        String duration = null;
-
-        // message to insert into body tag
-        String message;
+        ServletContext servletContext = getServletContext();
+        HikeReservation hikeReservation = new HikeReservation();
+        HttpSession session = request.getSession();
 
         // get user submitted variables
         if (request.getParameter("hikeName") != null) {
-            hikeName = request.getParameter("hikeName");
+            hikeReservation.setHikeName(request.getParameter("hikeName"));
         }
 
         if (request.getParameter("startDate") != null) {
-            startDate = request.getParameter("startDate");
+            hikeReservation.setStartDate(request.getParameter("startDate"));
         }
 
         if (request.getParameter("duration") != null) {
-            duration = request.getParameter("duration");
+            hikeReservation.setDuration(request.getParameter("duration"));
         }
 
-        if (request.getParameter("partyNumber") != null) {
-            partyNumber = request.getParameter("partyNumber");
-        }
-
-        if (hikeName == null || startDate == null || duration == null) {
-            message = "<p>Error! Missing fields</p>";
+        if (!hikeReservation.isValid()) {
+            request.setAttribute("message", "Missing fields");
+            RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/error.jsp");
+            dispatcher.forward(request, response);
         } else {
             // get total cost
-            String result = getCost(hikeName, duration, startDate);
+            String result = getCost(hikeReservation.getHikeName(),
+                    hikeReservation.getDuration() + "",
+                    hikeReservation.getStartDate());
 
             // split results into [VALUE:MESSAGE]
             String[] parts = result.split(":");
@@ -71,31 +69,16 @@ public class ravotta_hw9 extends HttpServlet {
             // if VALUE in return is -0.01 display error
             if (Double.parseDouble(parts[0]) != -0.01) {
                 // print out final total
-                message = "<p><strong>Total Cost:</strong> " + String.format("$%,.2f", Double.parseDouble(parts[0]));
+                request.setAttribute("message", Double.parseDouble(parts[0]));
+                session.setAttribute("hikeReservation", hikeReservation);
+                RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/quote.jsp");
+                dispatcher.forward(request, response);
             } else {
                 // display STRING result
-                message = "<p>Error! " + parts[1] + "</p>";
+                request.setAttribute("message", parts[1]);
+                RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/error.jsp");
+                dispatcher.forward(request, response);
             }
-        }
-
-        try {
-            hikeName = request.getParameter("hikeName");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Beartooth Hiking Company</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Beartooth Hiking Company Final Hike Rate</h1>");
-            out.println("<p><strong>Number in Party:</strong> " + partyNumber + "</p>");
-            out.println("<p><strong>Hike Name:</strong> " + hikeName + "</p>");
-            out.println("<p><strong>Start Date:</strong> " + startDate + "</p>");
-            out.println("<p><strong>Duration:</strong> " + duration + "</p>");
-            out.println("<p>&nbsp;</p>");
-            out.println(message);
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
         }
     }
 
