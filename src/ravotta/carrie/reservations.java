@@ -10,11 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class ravotta_hw9 extends HttpServlet {
+public class reservations extends HttpServlet {
+    String host = "web6.jhuep.com";
+    Integer port = 3306;
+    String dbName = "class";
+    String dbURL = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+
     /**
      * @param args the command line arguments
      */

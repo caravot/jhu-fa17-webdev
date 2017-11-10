@@ -1,3 +1,5 @@
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -21,7 +23,7 @@
 </nav>
 
 <div id="main-content" class="container-fluid">
-    <h1 class="page-header text-center">Book a Hike</h1>
+    <h1 class="page-header text-center">View Reservations</h1>
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <form action="Rate" method="post" class="form-horizontal" role="form" name="hikeForm" id="hikeForm">
@@ -80,3 +82,4 @@
 <script src="js/script.js"></script>
 </body>
 </html>
+
