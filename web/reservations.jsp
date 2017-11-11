@@ -1,4 +1,6 @@
-
+<%@ page import="ravotta.carrie.Reservation" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Iterator" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="en">
@@ -19,51 +21,21 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Beartooth Hiking Company</a>
         </div>
+        <p class="navbar-text navbar-right">
+            <a href="reservations.jsp" class="navbar-link">Search Reservations</a>
+        </p>
     </div>
 </nav>
 
 <div id="main-content" class="container-fluid">
-    <h1 class="page-header text-center">View Reservations</h1>
     <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-            <form action="Rate" method="post" class="form-horizontal" role="form" name="hikeForm" id="hikeForm">
-                <div class="form-group">
-                    <label for="hikeName" class="col-sm-2 control-label">Hike Name</label>
-                    <div class="col-sm-10">
-                        <select id="hikeName" name="hikeName" class="form-control">
-                            <option value="GARDINER">GARDINER</option>
-                            <option value="HELLROARING">HELLROARING</option>
-                            <option value="BEATEN">BEATEN</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="hikeName" class="col-sm-2 control-label">Number in Party</label>
-                    <div class="col-sm-10">
-                        <select id="partyNumber" name="partyNumber" class="form-control">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                        </select>
-                    </div>
-                </div>
+        <div class="col-lg-offset-3 col-md-offset-3 col-sm-offset-3 col-lg-6 col-md-6 col-sm-6">
+            <h1 class="page-header text-center">Search Reservations</h1>
+            <form action="reservations" method="post" class="form-horizontal" role="form" name="hikeForm" id="hikeForm">
                 <div class="form-group">
                     <label for="startDate" class="col-sm-2 control-label">Start Date</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="startDate" name="startDate" placeholder="MM/DD/YYYY">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="duration" class="col-sm-2 control-label">Duration</label>
-                    <div class="col-sm-10">
-                        <select id="duration" name="duration" class="form-control"></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -72,6 +44,45 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-offset-3 col-md-offset-3 col-sm-offset-3 col-lg-6 col-md-6 col-sm-6">
+            <h1 class="page-header text-center">Reservation List</h1>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <th>Dates</th>
+                    <th>Location</th>
+                    <th>Guide Name</th>
+                    <th>Guest Name</th>
+                </thead>
+                <tbody>
+                    <%
+                        ArrayList<Reservation> rsvpList = (ArrayList<Reservation>) request.getSession().getAttribute("queryResults");
+                        if (rsvpList != null) {
+                            Iterator<Reservation> iter = rsvpList.iterator();
+                            while (iter.hasNext()) {
+                                Reservation rsvp = iter.next();
+                    %>
+                        <tr>
+                            <td><%=rsvp.getStartDay() %></td>
+                            <td><%=rsvp.getLocation() %></td>
+                            <td><%=rsvp.getGuideName() %></td>
+                            <td><%=rsvp.getGuestName() %></td>
+                        </tr>
+                    <%
+                            }
+
+                            // no results
+                            if (rsvpList.size() == 0) {
+                    %>
+                                <tr><td colspan="4" align="center">No Results</td></tr>
+                    <%
+                            }
+                        }
+                    %>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

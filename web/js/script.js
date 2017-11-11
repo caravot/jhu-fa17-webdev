@@ -6,9 +6,7 @@ $(document).ready(function() {
   var startDate = $('input#startDate').datepicker({
     showButtonPanel: true,
     changeMonth: true,
-    changeYear: true,
-    minDate: "-2M",
-    maxDate: "+1Y"
+    changeYear: true
   });
 
   // set todays date

@@ -19,6 +19,9 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Beartooth Hiking Company</a>
         </div>
+        <p class="navbar-text navbar-right">
+            <a href="reservations.jsp" class="navbar-link">Search Reservations</a>
+        </p>
     </div>
 </nav>
 
@@ -34,23 +37,6 @@
                             <option value="GARDINER">GARDINER</option>
                             <option value="HELLROARING">HELLROARING</option>
                             <option value="BEATEN">BEATEN</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="hikeName" class="col-sm-2 control-label">Number in Party</label>
-                    <div class="col-sm-10">
-                        <select id="partyNumber" name="partyNumber" class="form-control">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
                         </select>
                     </div>
                 </div>
