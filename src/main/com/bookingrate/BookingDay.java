@@ -12,7 +12,7 @@
  * they run 1-12
  */
 
-package bookingrate;
+package com.bookingrate;
 
 import java.util.GregorianCalendar;
 

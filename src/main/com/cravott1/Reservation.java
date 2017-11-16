@@ -1,4 +1,4 @@
-package cravott1;
+package com.cravott1;
 
 public class Reservation {
     private String guestName;

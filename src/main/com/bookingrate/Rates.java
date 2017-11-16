@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package bookingrate;
+package com.bookingrate;
 
 import java.text.DateFormat;
 import java.util.Calendar;

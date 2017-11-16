@@ -1,7 +1,7 @@
-package cravott1;
+package com.cravott1;
 
-import bookingrate.BookingDay;
-import bookingrate.Rates;
+import com.bookingrate.BookingDay;
+import com.bookingrate.Rates;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
