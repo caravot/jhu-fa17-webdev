@@ -10,75 +10,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+@Path("/rsvp")
 public class ravotta_hw12 extends HttpServlet {
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-    }
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        ServletContext servletContext = getServletContext();
-        HikeReservation hikeReservation = new HikeReservation();
-        HttpSession session = request.getSession();
-
-        // get user submitted variables
-        if (request.getParameter("hikeName") != null) {
-            hikeReservation.setHikeName(request.getParameter("hikeName"));
-        }
-
-        if (request.getParameter("startDate") != null) {
-            hikeReservation.setStartDate(request.getParameter("startDate"));
-        }
-
-        if (request.getParameter("duration") != null) {
-            hikeReservation.setDuration(request.getParameter("duration"));
-        }
-
-        if (!hikeReservation.isValid()) {
-            request.setAttribute("message", "Missing fields");
-            RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/error.jsp");
-            dispatcher.forward(request, response);
-        } else {
-            // get total cost
-            String result = getCost(hikeReservation.getHikeName(),
-                    hikeReservation.getDuration() + "",
-                    hikeReservation.getStartDate());
-
-            // split results into [VALUE:MESSAGE]
-            String[] parts = result.split(":");
-
-            // if VALUE in return is -0.01 display error
-            if (Double.parseDouble(parts[0]) != -0.01) {
-                // print out final total
-                request.setAttribute("message", Double.parseDouble(parts[0]));
-                session.setAttribute("hikeReservation", hikeReservation);
-                RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/quote.jsp");
-                dispatcher.forward(request, response);
-            } else {
-                // display STRING result
-                request.setAttribute("message", parts[1]);
-                RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/error.jsp");
-                dispatcher.forward(request, response);
-            }
-        }
     }
 
     /**
@@ -110,73 +57,110 @@ public class ravotta_hw12 extends HttpServlet {
         }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Get hike duration information using GET or displays the hike final rate using POST.";
-    }
-
     /** Calculate total cost of hike
      */
-    private String getCost(String hikeName, String duration, String startDate) {
+    @POST
+    @Path("/cost")
+    @Produces("text/html;charset=UTF-8")
+    public Response getCost(@FormParam("hikeName") String hikeName,
+                          @FormParam("duration") String duration,
+                          @FormParam("startDate") String startDate,
+                          @FormParam("partyNumber") String partyNumber) {
+        // message to return to user
+        String msg;
+
+        // default status return of server error
+        Integer statusCode;
+
+        HikeReservation hikeReservation = new HikeReservation();
+
         // get instance to use for parsing the start date
         Calendar cal = Calendar.getInstance();
 
-        Rates rates = new Rates(Rates.HIKE.valueOf(hikeName));
-
-        // get what duration is selected
-        Integer selectedDuration = Integer.parseInt(duration);
-
-        // try to parse the user's start date entered
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-            cal.setTime(sdf.parse(startDate));
-        }
-        // invalid date format
-        catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            return "-0.01:Invalid date format. Error of: " + ex.getMessage();
+        // get user submitted variables
+        if (hikeName != null) {
+            hikeReservation.setHikeName(hikeName);
         }
 
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get(Calendar.DAY_OF_MONTH);
+        if (startDate != null) {
+            hikeReservation.setStartDate(startDate);
+        }
 
-        // set the book day start; add one to the month to compensate for the BookingDay offset
-        BookingDay startDay = new BookingDay(year, month, day);
+        if (duration != null) {
+            hikeReservation.setDuration(duration);
+        }
 
-        if (!startDay.isValidDate()) {
-            return "-0.01:Invalid time range. " + rates.getDetails();
+        if (partyNumber != null) {
+            hikeReservation.setPartyNumber(partyNumber);
+        }
+
+        if (!hikeReservation.isValid()) {
+            msg = "<div style=\"color: red;\"><strong>Invalid form values. You may be missing fields or have incorrect values.</strong></div>";
+            statusCode = 400;
         } else {
-            // add selected duration days to the start date
-            rates.setBeginDate(startDay);
+            try {
+                Rates rates = new Rates(Rates.HIKE.valueOf(hikeName));
+            } catch (Exception e) {
+                msg = "<div style=\"color: red;\"><strong>Invalid hike name.</strong></div>";
+                return Response.status(400).entity(msg).build();
+            }
 
-            // validate the range is valid
-            boolean success = rates.setDuration(selectedDuration);
-            if (rates.isValidDates() && success) {
-                // print out final total
-                return rates.getCost() + ":quoted rate";
+            Rates rates = new Rates(Rates.HIKE.valueOf(hikeName));
+
+            // get what duration is selected
+            Integer selectedDuration = Integer.parseInt(duration);
+
+            // try to parse the user's start date entered
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                cal.setTime(sdf.parse(startDate));
+            }
+            // invalid date format
+            catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                msg = "<div style=\"color: red;\"><strong>Invalid date format. Error of: " +
+                        ex.getMessage() +
+                        "</strong></div>";
+                statusCode = 400;
+            }
+
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH) + 1;
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+
+            // set the book day start; add one to the month to compensate for the BookingDay offset
+            BookingDay startDay = new BookingDay(year, month, day);
+
+            if (!startDay.isValidDate()) {
+                msg = "<div style=\"color: red;\"><strong>Invalid time range. Details: " +
+                        rates.getDetails() +
+                        "</strong></div>";
+                statusCode = 400;
             } else {
-                return "-0.01:Invalid time range. " + rates.getDetails();
+                // add selected duration days to the start date
+                rates.setBeginDate(startDay);
+
+                // validate the range is valid
+                boolean success = rates.setDuration(selectedDuration);
+                if (rates.isValidDates() && success) {
+                    // format cost as USD
+                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+
+                    // print out final total
+                    msg = "<div style=\"color: green;\"><strong>Quoted Rate: " +
+                            formatter.format(rates.getCost()) +
+                            "</strong></div>";
+                    statusCode = 200;
+                } else {
+                    msg = "<div style=\"color: red;\"><strong>Invalid time range. Details: " +
+                            rates.getDetails() +
+                            "</strong></div>";
+                    statusCode = 400;
+                }
             }
         }
+
+        // return message to user
+        return Response.status(statusCode).entity(msg).build();
     }
 }

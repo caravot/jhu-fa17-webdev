@@ -4,15 +4,21 @@ public class HikeReservation {
     private String hikeName;
     private String startDate;
     private int duration;
+    private int partyNumber;
 
     public HikeReservation() {
         hikeName = null;
         startDate = null;
         duration = 0;
+        partyNumber = 0;
     }
 
     public boolean isValid() {
-        return (this.hikeName != null && this.startDate != null && this.duration > 0);
+        return (this.hikeName != null
+                && this.startDate != null
+                && this.duration > 0
+                && this.partyNumber > 0
+                && this.partyNumber <= 10);
     }
 
     public String getHikeName() {
@@ -39,11 +45,20 @@ public class HikeReservation {
         this.duration = Integer.parseInt(duration);
     }
 
+    public int getPartyNumber() {
+        return partyNumber;
+    }
+
+    public void setPartyNumber(String partyNumber) {
+        this.partyNumber = Integer.parseInt(partyNumber);
+    }
+
     @Override
     public String toString() {
         return "HikeReservation{" +
                 "hikeName='" + hikeName + '\'' +
                 ", startDate='" + startDate + '\'' +
+                ", partyNumber='" + partyNumber + '\'' +
                 ", duration=" + duration +
                 '}';
     }

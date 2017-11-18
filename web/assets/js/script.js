@@ -20,7 +20,8 @@ $(document).ready(function() {
     // check that form is valid
     if(document.getElementById('startDate').value === '' ||
       document.getElementById('hikeName').value === '' ||
-      document.getElementById('duration').value === '') {
+      document.getElementById('duration').value === '' ||
+      document.getElementById('partyNumber').value === '') {
       alert("All fields are required");
 
       // stop form submission
