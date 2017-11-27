@@ -18,11 +18,11 @@
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>ravotta_hw12</servlet-name>
-        <servlet-class>com.cravott1.ravotta_hw12</servlet-class>
+        <servlet-name>ravotta_hw13</servlet-name>
+        <servlet-class>com.cravott1.ravotta_hw13</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ravotta_hw12</servlet-name>
+        <servlet-name>ravotta_hw13</servlet-name>
         <url-pattern>/Rate</url-pattern>
     </servlet-mapping>
     <session-config>

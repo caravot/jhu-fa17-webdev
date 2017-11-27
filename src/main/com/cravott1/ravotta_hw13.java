@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.*;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @Path("/rsvp")
-public class ravotta_hw12 extends HttpServlet {
+public class ravotta_hw13 extends HttpServlet {
     /**
      * @param args the command line arguments
      */
@@ -55,6 +56,19 @@ public class ravotta_hw12 extends HttpServlet {
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(String.join(",", durations));
         }
+    }
+
+    @GET
+    @Path("/record")
+    @Produces(MediaType.APPLICATION_JSON)
+    public HikeReservation getReservation() {
+        HikeReservation hr = new HikeReservation();
+        hr.setPartyNumber("5");
+        hr.setDuration("2");
+        hr.setStartDate("07/05/2017");
+        hr.setHikeName("GARDINER");
+
+        return hr;
     }
 
     /** Calculate total cost of hike

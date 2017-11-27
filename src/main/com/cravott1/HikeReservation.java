@@ -1,9 +1,17 @@
 package com.cravott1;
 
+import com.fasterxml.jackson.annotation.JsonClassDescription;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 public class HikeReservation {
+    @JsonProperty("hike")
     private String hikeName;
+    @JsonProperty("date")
     private String startDate;
+    @JsonProperty("duration")
     private int duration;
+    @JsonProperty("party")
     private int partyNumber;
 
     public HikeReservation() {
