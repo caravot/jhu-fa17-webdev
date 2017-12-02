@@ -17,14 +17,6 @@
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
-    <servlet>
-        <servlet-name>ravotta_hw13</servlet-name>
-        <servlet-class>com.cravott1.ravotta_hw13</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ravotta_hw13</servlet-name>
-        <url-pattern>/Rate</url-pattern>
-    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

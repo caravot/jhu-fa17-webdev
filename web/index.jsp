@@ -10,6 +10,50 @@
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <script src="assets/js/jquery-1.11.3.min.js"></script>
+    <script src="assets/js/jquery-ui.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script language="JavaScript">
+      $(document).ready(function () {
+        // create date picker
+        var date = $('input#date').datepicker({
+          showButtonPanel: true,
+          changeMonth: true,
+          changeYear: true
+        });
+
+        // set todays date
+        date.datepicker('setDate', new Date());
+
+        // validate required fields
+        $('#hikeForm').on('submit', function (e) {
+          e.preventDefault();
+
+          // get form parameters and translate them to a JSON object
+          // that is mapped to a JSON/Java object in service
+          var viewArr = $("form#hikeForm").serializeArray();
+          var view = {};
+
+          for (var i in viewArr) {
+            view[viewArr[i].name] = viewArr[i].value;
+          }
+
+          $.ajax({
+            type: "POST",
+            contentType: 'application/json',
+            dataType: "json",
+            data: JSON.stringify(view),
+            url: 'api/rsvp/new',
+            success: function(data) {
+              $("#message").html(data.message);
+            }
+          });
+
+          return false;
+        })
+      });
+    </script>
 </head>
 <body>
 
@@ -26,13 +70,15 @@
 
 <div id="main-content" class="container-fluid">
     <h1 class="page-header text-center">Book a Hike</h1>
+    <p class="text-center">We open June 1st and close Oct 1st.</p>
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <form action="api/rsvp/cost" method="post" class="form-horizontal" role="form" name="hikeForm" id="hikeForm">
+            <form action="" method="post" class="form-horizontal" role="form" name="hikeForm"
+                  id="hikeForm">
                 <div class="form-group">
-                    <label for="hikeName" class="col-sm-2 control-label">Hike Name</label>
+                    <label for="hike" class="col-sm-2 control-label">Hike Name</label>
                     <div class="col-sm-10">
-                        <select id="hikeName" name="hikeName" class="form-control">
+                        <select id="hike" name="hike" class="form-control">
                             <option value="GARDINER">GARDINER</option>
                             <option value="HELLROARING">HELLROARING</option>
                             <option value="BEATEN">BEATEN</option>
@@ -40,9 +86,21 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="hikeName" class="col-sm-2 control-label">Number in Party</label>
+                    <label for="duration" class="col-sm-2 control-label">Duration</label>
                     <div class="col-sm-10">
-                        <select id="partyNumber" name="partyNumber" class="form-control">
+                        <select id="duration" name="duration" class="form-control">
+                            <option value="2">2 (HELLROARING)</option>
+                            <option value="3">3 (GARDINER, HELLROARING)</option>
+                            <option value="4">4 (HELLROARING)</option>
+                            <option value="5">5 (GARDINER, BEATEN)</option>
+                            <option value="7">7 (BEATEN)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="hike" class="col-sm-2 control-label">Number in Party</label>
+                    <div class="col-sm-10">
+                        <select id="party" name="party" class="form-control">
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -57,15 +115,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="startDate" class="col-sm-2 control-label">Start Date</label>
+                    <label for="date" class="col-sm-2 control-label">Start Date</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="startDate" name="startDate" placeholder="MM/DD/YYYY">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="duration" class="col-sm-2 control-label">Duration</label>
-                    <div class="col-sm-10">
-                        <select id="duration" name="duration" class="form-control"></select>
+                        <input type="text" class="form-control" id="date" name="date"
+                               placeholder="MM/DD/YYYY">
                     </div>
                 </div>
                 <div class="form-group">
@@ -76,11 +129,9 @@
             </form>
         </div>
     </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center text-danger" id="message"></div>
+    </div>
 </div>
-
-<script src="assets/js/jquery-1.11.3.min.js"></script>
-<script src="assets/js/jquery-ui.min.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/script.js"></script>
 </body>
 </html>

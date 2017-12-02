@@ -1,72 +1,81 @@
 package com.cravott1;
 
-import com.fasterxml.jackson.annotation.JsonClassDescription;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 public class HikeReservation {
     @JsonProperty("hike")
-    private String hikeName;
+    private String hike;
     @JsonProperty("date")
-    private String startDate;
+    private String date;
     @JsonProperty("duration")
     private int duration;
     @JsonProperty("party")
-    private int partyNumber;
+    private int party;
 
     public HikeReservation() {
-        hikeName = null;
-        startDate = null;
+        hike = null;
+        date = null;
         duration = 0;
-        partyNumber = 0;
+        party = 0;
     }
 
     public boolean isValid() {
-        return (this.hikeName != null
-                && this.startDate != null
+        return (this.hike != null
+                && this.date != null
                 && this.duration > 0
-                && this.partyNumber > 0
-                && this.partyNumber <= 10);
+                && this.party > 0
+                && this.party <= 10);
     }
 
-    public String getHikeName() {
-        return hikeName;
+    public String getHike() {
+        return hike;
     }
 
-    public void setHikeName(String hikeName) {
-        this.hikeName = hikeName;
+    public void setHike(String hike) {
+        this.hike = hike;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public String getDate() {
+        return date;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public int getDuration() {
         return duration;
     }
 
+    @JsonIgnore
     public void setDuration(String duration) {
         this.duration = Integer.parseInt(duration);
     }
 
-    public int getPartyNumber() {
-        return partyNumber;
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
-    public void setPartyNumber(String partyNumber) {
-        this.partyNumber = Integer.parseInt(partyNumber);
+    public int getParty() {
+        return party;
+    }
+
+    @JsonIgnore
+    public void setParty(String party) {
+        this.party = Integer.parseInt(party);
+    }
+
+    public void setParty(int partyNumber) {
+        this.party = partyNumber;
     }
 
     @Override
     public String toString() {
         return "HikeReservation{" +
-                "hikeName='" + hikeName + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", partyNumber='" + partyNumber + '\'' +
+                "hike='" + hike + '\'' +
+                ", date='" + date + '\'' +
+                ", party='" + party + '\'' +
                 ", duration=" + duration +
                 '}';
     }
